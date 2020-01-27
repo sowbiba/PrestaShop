@@ -27,13 +27,13 @@
 namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataProvider;
 
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
-use PrestaShop\PrestaShop\Core\Domain\OrderState\Query\GetOrderStateForEditing;
-use PrestaShop\PrestaShop\Core\Domain\OrderState\QueryResult\EditableOrderState;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Query\GetOrderReturnStateForEditing;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\QueryResult\EditableOrderReturnState;
 
 /**
- * Provides data for order state forms
+ * Provides data for order return state forms
  */
-final class OrderStateFormDataProvider implements FormDataProviderInterface
+final class OrderReturnStateFormDataProvider implements FormDataProviderInterface
 {
     /**
      * @var CommandBusInterface
@@ -51,22 +51,12 @@ final class OrderStateFormDataProvider implements FormDataProviderInterface
      */
     public function getData($orderStateId)
     {
-        /** @var EditableOrderState $editableOrderState */
-        $editableOrderState = $this->queryBus->handle(new GetOrderStateForEditing((int) $orderStateId));
+        /** @var EditableOrderReturnState $editableOrderReturnState */
+        $editableOrderReturnState = $this->queryBus->handle(new GetOrderReturnStateForEditing((int) $orderStateId));
 
         return [
-            'name' => $editableOrderState->getLocalizedNames(),
-            'color' => $editableOrderState->getColor(),
-            'logable' => $editableOrderState->isLogable(),
-            'invoice' => $editableOrderState->isInvoiceOn(),
-            'hidden' => $editableOrderState->isHiddenOn(),
-            'send_email' => $editableOrderState->isSendEmailOn(),
-            'pdf_invoice' => $editableOrderState->isPdfInvoiceOn(),
-            'pdf_delivery' => $editableOrderState->isPdfDeliveryOn(),
-            'shipped' => $editableOrderState->isShippedOn(),
-            'paid' => $editableOrderState->isPaidOn(),
-            'delivery' => $editableOrderState->isDeliveryOn(),
-            'template' => $editableOrderState->getLocalizedTemplates(),
+            'name' => $editableOrderReturnState->getLocalizedNames(),
+            'color' => $editableOrderReturnState->getColor(),
         ];
     }
 

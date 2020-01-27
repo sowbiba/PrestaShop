@@ -24,30 +24,18 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\QueryHandler;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Query\GetOrderReturnStateForEditing;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\QueryResult\EditableOrderReturnState;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Interface for service that gets order return state data for editing
  */
-final class OrderReturnStatesFilters extends Filters
+interface GetOrderReturnStateForEditingHandlerInterface
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
-
     /**
-     * {@inheritdoc}
+     * @return EditableOrderReturnState
      */
-    public static function getDefaults()
-    {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
-    }
+    public function handle(GetOrderReturnStateForEditing $query);
 }

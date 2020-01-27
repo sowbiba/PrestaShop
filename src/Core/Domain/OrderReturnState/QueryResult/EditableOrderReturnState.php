@@ -24,30 +24,59 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\QueryResult;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\ValueObject\OrderReturnStateId;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Stores editable data for order return state
  */
-final class OrderReturnStatesFilters extends Filters
+class EditableOrderReturnState
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
+    /**
+     * @var OrderReturnStateId
+     */
+    private $orderReturnStateId;
+    /**
+     * @var array
+     */
+    private $localizedNames;
+    /**
+     * @var string
+     */
+    private $color;
+
+    public function __construct(
+        OrderReturnStateId $orderStateId,
+        array $name,
+        string $color
+    ) {
+        $this->orderReturnStateId = $orderStateId;
+        $this->localizedNames = $name;
+        $this->color = $color;
+    }
 
     /**
-     * {@inheritdoc}
+     * @return OrderReturnStateId
      */
-    public static function getDefaults()
+    public function getOrderReturnStateId()
     {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
+        return $this->orderReturnStateId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLocalizedNames()
+    {
+        return $this->localizedNames;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
     }
 }

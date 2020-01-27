@@ -24,30 +24,21 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Adapter\OrderReturnState;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use OrderReturnState;
+use PrestaShop\PrestaShop\Core\Order\OrderReturnStateDataProviderInterface;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Class OrderReturnStateDataProvider provides OrderReturnState data using legacy code.
  */
-final class OrderReturnStatesFilters extends Filters
+final class OrderReturnStateDataProvider implements OrderReturnStateDataProviderInterface
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
-
     /**
      * {@inheritdoc}
      */
-    public static function getDefaults()
+    public function getOrderReturnStates($languageId)
     {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
+        return OrderReturnState::getOrderReturnStates($languageId);
     }
 }

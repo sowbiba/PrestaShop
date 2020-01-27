@@ -24,30 +24,18 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\CommandHandler;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Command\AddOrderReturnStateCommand;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\ValueObject\OrderReturnStateId;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Interface for service that handles command that adds new order return state
  */
-final class OrderReturnStatesFilters extends Filters
+interface AddOrderReturnStateHandlerInterface
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
-
     /**
-     * {@inheritdoc}
+     * @return OrderReturnStateId
      */
-    public static function getDefaults()
-    {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
-    }
+    public function handle(AddOrderReturnStateCommand $command);
 }

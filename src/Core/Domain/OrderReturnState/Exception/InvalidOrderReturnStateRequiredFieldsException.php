@@ -24,30 +24,11 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
-
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Exception;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Thrown when trying to set invalid required fields for order state
  */
-final class OrderReturnStatesFilters extends Filters
+class InvalidOrderReturnStateRequiredFieldsException extends OrderReturnStateException
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getDefaults()
-    {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
-    }
 }

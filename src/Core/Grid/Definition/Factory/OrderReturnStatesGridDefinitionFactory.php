@@ -107,9 +107,10 @@ final class OrderReturnStatesGridDefinitionFactory extends AbstractGridDefinitio
                             ->setName($this->trans('Edit', [], 'Admin.Actions'))
                             ->setIcon('edit')
                             ->setOptions([
-                                'route' => 'admin_order_states',
-                                'route_param_name' => 'returnStateId',
+                                'route' => 'admin_order_return_states_edit',
+                                'route_param_name' => 'orderReturnStateId',
                                 'route_param_field' => 'id_order_return_state',
+                                'clickable_row' => true,
                             ])
                         ),
                 ])

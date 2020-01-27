@@ -26,6 +26,7 @@
 
 namespace PrestaShopBundle\Controller\Admin\Configure\ShopParameters;
 
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Query\GetOrderReturnStateForEditing;
 use PrestaShop\PrestaShop\Core\Domain\OrderState\Exception\DuplicateOrderStateNameException;
 use PrestaShop\PrestaShop\Core\Domain\OrderState\Exception\MissingOrderStateRequiredFieldsException;
 use PrestaShop\PrestaShop\Core\Domain\OrderState\Exception\OrderStateConstraintException;
@@ -57,10 +58,14 @@ class OrderStateController extends FrameworkBundleAdminController
         OrderReturnStatesFilters $orderReturnStatesFilters
     ) {
         $orderStatesGridFactory = $this->get('prestashop.core.grid.factory.order_states');
-        $orderStatesGrid = $orderStatesGridFactory->getGrid($orderStatesFilters);
+        $orderStatesGrid = $orderStatesGridFactory->getGrid(
+            $this->buildFiltersParamsByRequest($request, $orderStatesFilters)
+        );
 
         $orderReturnStatesGridFactory = $this->get('prestashop.core.grid.factory.order_return_states');
-        $orderReturnStatesGrid = $orderReturnStatesGridFactory->getGrid($orderReturnStatesFilters);
+        $orderReturnStatesGrid = $orderReturnStatesGridFactory->getGrid(
+            $this->buildFiltersParamsByRequest($request, $orderReturnStatesFilters)
+        );
 
         return $this->render('@PrestaShop/Admin/Configure/ShopParameters/OrderStates/index.html.twig', [
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -125,6 +130,8 @@ class OrderStateController extends FrameworkBundleAdminController
         return $this->render('@PrestaShop/Admin/Configure/ShopParameters/OrderStates/create.html.twig', [
             'orderStateForm' => $orderStateForm->createView(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+            'contextLangId' => $this->getContextLangId(),
+            'templatesPreviewUrl' => _MAIL_DIR_,
             'languages' => array_map(
                 function (array $language) {
                     return [
@@ -172,6 +179,72 @@ class OrderStateController extends FrameworkBundleAdminController
                         'id' => $language['iso_code'],
                         'value' => sprintf('%s - %s', $language['iso_code'], $language['name']), ];
                 }, $this->get('prestashop.adapter.legacy.context')->getLanguages()),
+        ]);
+    }
+
+    /**
+     * Show order return state create form & handle processing of it.
+     *
+     * @AdminSecurity("is_granted(['create'], request.get('_legacy_controller'))")
+     *
+     * @return Response
+     */
+    public function createOrderReturnStateAction(Request $request)
+    {
+        $orderReturnStateForm = $this->get('prestashop.core.form.identifiable_object.builder.order_return_state_form_builder')->getForm();
+        $orderReturnStateForm->handleRequest($request);
+
+        $orderReturnStateFormHandler = $this->get('prestashop.core.form.identifiable_object.handler.order_return_state_form_handler');
+
+        try {
+            $result = $orderReturnStateFormHandler->handle($orderReturnStateForm);
+
+            if ($orderReturnStateId = $result->getIdentifiableObjectId()) {
+                $this->addFlash('success', $this->trans('Successful creation.', 'Admin.Notifications.Success'));
+
+                return $this->redirectToRoute('admin_order_states');
+            }
+        } catch (\Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+        }
+
+        return $this->render('@PrestaShop/Admin/Configure/ShopParameters/OrderReturnStates/create.html.twig', [
+            'orderReturnStateForm' => $orderReturnStateForm->createView(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+        ]);
+    }
+
+    /**
+     * Show order return state edit form & handle processing of it.
+     *
+     * @AdminSecurity("is_granted(['update'], request.get('_legacy_controller'))")
+     *
+     * @return Response
+     */
+    public function editOrderReturnStateAction(int $orderReturnStateId, Request $request)
+    {
+        $orderReturnStateForm = $this->get('prestashop.core.form.identifiable_object.builder.order_return_state_form_builder')->getFormFor($orderReturnStateId);
+        $orderReturnStateForm->handleRequest($request);
+
+        $orderReturnStateFormHandler = $this->get('prestashop.core.form.identifiable_object.handler.order_return_state_form_handler');
+
+        try {
+            $result = $orderReturnStateFormHandler->handleFor($orderReturnStateId, $orderReturnStateForm);
+
+            if ($result->isSubmitted() && $result->isValid()) {
+                $this->addFlash('success', $this->trans('Successful update.', 'Admin.Notifications.Success'));
+
+                return $this->redirectToRoute('admin_order_states');
+            }
+        } catch (\Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+        }
+
+        return $this->render('@PrestaShop/Admin/Configure/ShopParameters/OrderReturnStates/edit.html.twig', [
+            'orderReturnStateForm' => $orderReturnStateForm->createView(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+            'editableOrderReturnState' => $this->getQueryBus()->handle(new GetOrderReturnStateForEditing((int) $orderReturnStateId)),
+            'contextLangId' => $this->getContextLangId(),
         ]);
     }
 

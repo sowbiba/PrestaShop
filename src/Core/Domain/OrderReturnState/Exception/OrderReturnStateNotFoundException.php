@@ -24,30 +24,37 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Exception;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\ValueObject\OrderReturnStateId;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Is thrown when order state is not found
  */
-final class OrderReturnStatesFilters extends Filters
+class OrderReturnStateNotFoundException extends OrderReturnStateException
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
+    /**
+     * @var OrderReturnStateId
+     */
+    private $orderReturnStateId;
 
     /**
-     * {@inheritdoc}
+     * @param string $message
+     * @param int $code
+     * @param \Exception|null $previous
      */
-    public static function getDefaults()
+    public function __construct(OrderReturnStateId $orderReturnStateId, $message = '', $code = 0, $previous = null)
     {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
+        $this->orderReturnStateId = $orderReturnStateId;
+
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * @return OrderReturnStateId
+     */
+    public function getOrderReturnStateId()
+    {
+        return $this->orderReturnStateId;
     }
 }

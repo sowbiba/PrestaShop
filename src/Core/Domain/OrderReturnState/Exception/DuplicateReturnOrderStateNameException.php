@@ -24,30 +24,37 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-namespace PrestaShop\PrestaShop\Core\Search\Filters;
+namespace PrestaShop\PrestaShop\Core\Domain\OrderReturnState\Exception;
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderReturnStatesGridDefinitionFactory;
-use PrestaShop\PrestaShop\Core\Search\Filters;
+use PrestaShop\PrestaShop\Core\Domain\OrderReturnState\ValueObject\Name;
 
 /**
- * Class OrderReturnStatesFilters provides default filters for order return states grid.
+ * Exception is thrown when name which already exists is being used to create or update other order state
  */
-final class OrderReturnStatesFilters extends Filters
+class DuplicateOrderReturnStateNameException extends OrderReturnStateException
 {
-    /** @var string */
-    protected $filterId = OrderReturnStatesGridDefinitionFactory::GRID_ID;
+    /**
+     * @var Name
+     */
+    private $name;
 
     /**
-     * {@inheritdoc}
+     * @param string $message
+     * @param int $code
+     * @param null $previous
      */
-    public static function getDefaults()
+    public function __construct(Name $name, $message = '', $code = 0, $previous = null)
     {
-        return [
-            'limit' => 50,
-            'offset' => 0,
-            'orderBy' => 'id_order_return_state',
-            'sortOrder' => 'ASC',
-            'filters' => [],
-        ];
+        parent::__construct($message, $code, $previous);
+
+        $this->name = $name;
+    }
+
+    /**
+     * @return Name
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }
