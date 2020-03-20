@@ -202,6 +202,25 @@ class CurrencyFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
+     * @When I delete currency with iso code ":currencyIsoCode"
+     */
+    public function deleteCurrencyWithIsoCode($currencyIsoCode)
+    {
+        $currencyId = Currency::getIdByIsoCode($currencyIsoCode);
+
+        if (null === $currencyId || 0 === $currencyId) {
+            return;
+        }
+
+        try {
+            $this->lastException = null;
+            $this->getCommandBus()->handle(new DeleteCurrencyCommand((int) $currencyId));
+        } catch (CannotDeleteDefaultCurrencyException $e) {
+            $this->lastException = $e;
+        }
+    }
+
+    /**
      * @When I request reference data for :currencyIsoCode
      */
     public function getCurrencyReferenceData($currencyIsoCode)
