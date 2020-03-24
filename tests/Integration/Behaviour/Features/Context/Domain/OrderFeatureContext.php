@@ -650,6 +650,21 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
+     * @Then order :orderReference should have the following details:
+     *
+     * @param string $orderReference
+     * @param TableNode $table
+     */
+    public function queryOrderToGetTheFollowingProperties(string $orderReference, TableNode $table)
+    {
+        $orderId = SharedStorage::getStorage()->get($orderReference);
+
+        Assert::assertTrue(
+            $this->assertOrderPropertiesEquals(new Order($orderId), $table->getRowsHash())
+        );
+    }
+
+    /**
      * @param string $productName
      *
      * @return int
@@ -695,5 +710,16 @@ class OrderFeatureContext extends AbstractDomainFeatureContext
         }
 
         return $productQuantities;
+    }
+
+    private function assertOrderPropertiesEquals(Order $order, array $data): bool
+    {
+        foreach (array_keys($data) as $property) {
+            if (!property_exists($order, $property) || $data[$property] !== $order->$property) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
