@@ -66,6 +66,7 @@ final class ChangeOrderCurrencyHandler extends AbstractOrderHandler implements C
             }
 
             $this->updateOrderDetail($order, $oldCurrency, $newCurrency);
+            $this->updateOrderCartRules($order, $oldCurrency, $newCurrency);
             $this->updateOrderCarrier((int) $order->getIdOrderCarrier(), $oldCurrency, $newCurrency);
             $this->updateInvoices($order->getInvoicesCollection(), $oldCurrency, $newCurrency);
             $this->updateOrder($order, $oldCurrency, $newCurrency);
@@ -154,6 +155,34 @@ final class ChangeOrderCurrencyHandler extends AbstractOrderHandler implements C
         foreach ($invoices as $invoice) {
             $this->convertPriceFields($invoice, $this->getSharedAmountFields(), $oldCurrency, $newCurrency);
             $invoice->save();
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @param Currency $oldCurrency
+     * @param Currency $newCurrency
+     */
+    private function updateOrderCartRules(Order $order, Currency $oldCurrency, Currency $newCurrency): void
+    {
+        foreach ($order->getCartRules() as $cartRule) {
+            $orderCartRule = new \OrderCartRule((int) $cartRule['id_order_cart_rule']);
+            if ($cartRule['value'] > 0) {
+                $orderCartRule->value = Tools::convertPriceFull(
+                    (float) $cartRule['value'],
+                    $oldCurrency,
+                    $newCurrency
+                );
+            }
+            if ($cartRule['value_tax_excl'] > 0) {
+                $orderCartRule->value_tax_excl = Tools::convertPriceFull(
+                    (float) $cartRule['value_tax_excl'],
+                    $oldCurrency,
+                    $newCurrency
+                );
+            }
+
+            $orderCartRule->update();
         }
     }
 
