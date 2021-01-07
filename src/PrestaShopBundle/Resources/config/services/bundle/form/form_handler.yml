@@ -417,7 +417,7 @@ services:
         arguments:
             - '@form.factory'
             - '@prestashop.core.hook.dispatcher'
-            - 'PrestaShopBundle\Form\Admin\Improve\International\Translations\ExportThemeLanguageType'
+            - 'PrestaShopBundle\Form\Admin\Improve\International\Translations\ExportLanguageType'
             - 'TranslationSettingsPageExportLanguage'
 
     prestashop.admin.translations_settings.copy_language.form_handler:

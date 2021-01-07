@@ -77,7 +77,7 @@ class ThemeExtractorCache implements ThemeExtractorInterface
             return $this->loadFromCache($theme, $locale);
         }
 
-        $catalogue = $this->extractor->extract($theme);
+        $catalogue = $this->extractor->extract($theme, $locale);
         $this->updateCache($theme, $catalogue);
 
         return $catalogue;

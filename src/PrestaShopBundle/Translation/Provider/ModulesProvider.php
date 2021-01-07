@@ -197,14 +197,17 @@ class ModulesProvider implements ProviderInterface
             return $catalogueFromPhpAndSmartyFiles;
         }
 
+        $normalizer = new DomainNormalizer();
         foreach ($catalogueFromPhpAndSmartyFiles->all() as $currentDomain => $items) {
             foreach (array_keys($items) as $translationKey) {
                 $legacyKey = md5($translationKey);
 
-                if ($catalogueFromLegacyTranslationFiles->has($legacyKey, $currentDomain)) {
+                $newDomain = $normalizer->normalize($currentDomain);
+
+                if ($catalogueFromLegacyTranslationFiles->has($legacyKey, $newDomain)) {
                     $legacyFilesCatalogue->set(
                         $translationKey,
-                        $catalogueFromLegacyTranslationFiles->get($legacyKey, $currentDomain),
+                        $catalogueFromLegacyTranslationFiles->get($legacyKey, $newDomain),
                         // use current domain and not module domain, otherwise we'd lose the third part from the domain
                         $currentDomain
                     );
@@ -238,7 +241,7 @@ class ModulesProvider implements ProviderInterface
                 if (preg_match($pattern, $newDomain)) {
                     $newCatalogue->add(
                         $catalogue->all($domain),
-                        $newDomain
+                        $domain
                     );
                     break;
                 }

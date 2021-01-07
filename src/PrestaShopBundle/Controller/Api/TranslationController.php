@@ -68,7 +68,7 @@ class TranslationController extends ApiController
      *
      * @return JsonResponse
      */
-    public function listDomainTranslationAction(Request $request)
+    public function listDomainTranslationAction(Request $request): JsonResponse
     {
         try {
             $queryParamsCollection = $this->queryParams->fromRequest($request);

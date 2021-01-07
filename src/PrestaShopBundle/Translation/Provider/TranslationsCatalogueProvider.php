@@ -67,6 +67,7 @@ class TranslationsCatalogueProvider
         array $search = []
     ): array {
         $provider = $this->providerFactory->build($providerType);
+
         $defaultCatalogue = $this->filterCatalogue(
             $provider->getDefaultCatalogue($locale),
             $locale,

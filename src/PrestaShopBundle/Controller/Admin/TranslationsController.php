@@ -184,7 +184,7 @@ class TranslationsController extends FrameworkBundleAdminController
     }
 
     /**
-     * Extract theme using locale and theme name.
+     * Extract theme or module using locale and name.
      *
      * @AdminSecurity("is_granted('create', request.get('_legacy_controller')~'_')")
      *
@@ -192,7 +192,69 @@ class TranslationsController extends FrameworkBundleAdminController
      *
      * @return BinaryFileResponse|RedirectResponse
      */
-    public function exportThemeLanguageAction(Request $request)
+    public function exportAction(Request $request)
+    {
+        if (
+            $request->request->has('form')
+            && is_array($request->request->get('form'))
+            && array_key_exists('translation_export_type', $request->request->get('form'))
+        ) {
+            if ('modules' === $request->request->get('form')['translation_export_type']) {
+                return $this->exportModuleLanguage($request);
+            } else { // themes types
+                return $this->exportThemeLanguage($request);
+            }
+        }
+
+        $this->addFlash('error', $this->trans(json_encode($request->request->all()) . ' An error has occurred, the export required is incorrect', 'Admin.International.Notification'));
+
+        return $this->redirectToRoute('admin_international_translations_show_settings');
+    }
+
+    /**
+     * Extract module using locale and module name.
+     *
+     * @param Request $request
+     *
+     * @return BinaryFileResponse|RedirectResponse
+     */
+    private function exportModuleLanguage(Request $request)
+    {
+        $formHandler = $this->getExportLanguageTranslationsFormHander();
+        $exportThemeLanguageForm = $formHandler->getForm();
+        $exportThemeLanguageForm->handleRequest($request);
+
+        if ($exportThemeLanguageForm->isSubmitted()) {
+            $data = $exportThemeLanguageForm->getData();
+
+            $moduleName = $data['module_name'];
+            $isoCode = $data['iso_code'];
+
+            $langRepository = $this->get('prestashop.core.admin.lang.repository');
+            $locale = $langRepository->getLocaleByIsoCode($isoCode);
+
+            $moduleExporter = $this->get('prestashop.translation.exporter.module');
+            $zipFile = $moduleExporter->createZipArchive($moduleName, $locale, _PS_ROOT_DIR_ . DIRECTORY_SEPARATOR);
+
+            $response = new BinaryFileResponse($zipFile);
+            $response->deleteFileAfterSend(true);
+
+            $moduleExporter->cleanArtifacts($moduleName);
+
+            return $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        }
+
+        return $this->redirectToRoute('admin_international_translations_show_settings');
+    }
+
+    /**
+     * Extract theme using locale and theme name.
+     *
+     * @param Request $request
+     *
+     * @return BinaryFileResponse|RedirectResponse
+     */
+    private function exportThemeLanguage(Request $request)
     {
         $formHandler = $this->getExportLanguageTranslationsFormHander();
         $exportThemeLanguageForm = $formHandler->getForm();

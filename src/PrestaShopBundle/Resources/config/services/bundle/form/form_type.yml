@@ -566,11 +566,13 @@ services:
             - { name: form.type }
 
     form.type.translations.export_language:
-        class: 'PrestaShopBundle\Form\Admin\Improve\International\Translations\ExportThemeLanguageType'
+        class: 'PrestaShopBundle\Form\Admin\Improve\International\Translations\ExportLanguageType'
         parent: 'form.type.translatable.aware'
         public: true
         arguments:
+            - '@=service("prestashop.core.form.choice_provider.translation_export_type").getChoices()'
             - '@=service("prestashop.core.form.choice_provider.theme_by_name").getChoices()'
+            - '@=service("prestashop.core.form.choice_provider.module_by_name").getChoices()'
         tags:
             - { name: form.type }
 

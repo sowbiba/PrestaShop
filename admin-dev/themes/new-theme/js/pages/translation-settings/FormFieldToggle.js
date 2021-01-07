@@ -65,9 +65,11 @@ const emailContentBody = 'body';
 export default class FormFieldToggle {
   constructor() {
     $('.js-translation-type').on('change', this.toggleFields.bind(this));
+    $('.js-export-type').on('change', this.toggleExportFields.bind(this));
     $('.js-email-content-type').on('change', this.toggleEmailFields.bind(this));
 
     this.toggleFields();
+    this.toggleExportFields();
   }
 
   /**
@@ -105,6 +107,30 @@ export default class FormFieldToggle {
     }
 
     this.toggleEmailFields();
+  }
+
+  /**
+   * Toggle dependant exports fields, based on selected export type
+   */
+  toggleExportFields() {
+    const selectedOption = $('.js-export-type').val();
+    const $modulesFormGroup = $('.js-module-export-form-group');
+    const $themesFormGroup = $('.js-theme-export-form-group');
+
+    switch (selectedOption) {
+      case themes:
+        this.hide($modulesFormGroup);
+        this.show($themesFormGroup);
+        break;
+
+      case modules:
+        this.hide($themesFormGroup);
+        this.show($modulesFormGroup);
+        break;
+
+      default:
+        break;
+    }
   }
 
   /**

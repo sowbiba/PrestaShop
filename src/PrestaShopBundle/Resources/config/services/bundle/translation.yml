@@ -94,6 +94,22 @@ services:
     prestashop.translation.dumper.xliff:
         class: PrestaShop\TranslationToolsBundle\Translation\Dumper\XliffFileDumper
 
+    prestashop.translation.dumper.php:
+        class: PrestaShop\TranslationToolsBundle\Translation\Dumper\PhpDumper
+
+    prestashop.translation.exporter.module:
+        class: PrestaShopBundle\Translation\Exporter\ModuleExporter
+        arguments:
+            - '@prestashop.translation.extractor.legacy_module'
+            - "@prestashop.translation.provider_factory"
+            - "@prestashop.translation.dumper.xliff"
+            - "@prestashop.translation.dumper.php"
+            - "@prestashop.utils.zip_manager"
+            - "@filesystem"
+            - "%modules_translations_cache_dir%"
+        calls:
+            - [ setExportDir, ["%kernel.cache_dir%/export"]]
+
     prestashop.translation.exporter.theme:
         class: PrestaShopBundle\Translation\Exporter\ThemeExporter
         arguments:

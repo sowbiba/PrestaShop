@@ -25,7 +25,7 @@
 
 {% trans_default_domain 'Admin.International.Feature' %}
 
-{{ form_start(exportLanguageForm, {action: path('admin_international_translations_export_theme')}) }}
+{{ form_start(exportLanguageForm, {action: path('admin_international_translations_export')}) }}
 
 <div class="card">
   <h3 class="card-header">
@@ -53,8 +53,17 @@
           {{ form_widget(exportLanguageForm.iso_code) }}
         </div>
       </div>
-
       <div class="form-group row">
+        <label class="form-control-label">
+          {{ 'Type of translation'|trans }}
+        </label>
+        <div class="col-sm">
+          {{ form_errors(exportLanguageForm.translation_export_type) }}
+          {{ form_widget(exportLanguageForm.translation_export_type, {'attr': {'class': 'js-export-type'}}) }}
+        </div>
+      </div>
+
+      <div class="form-group row js-theme-export-form-group d-none">
         <label class="form-control-label">
           {{ 'Select your theme'|trans }}
         </label>
@@ -63,6 +72,16 @@
           {{ form_widget(exportLanguageForm.theme_name) }}
         </div>
       </div>
+      <div class="form-group row js-module-export-form-group d-none">
+        <label class="form-control-label">
+          {{ 'Select your module'|trans }}
+        </label>
+        <div class="col-sm">
+          {{ form_errors(exportLanguageForm.module_name) }}
+          {{ form_widget(exportLanguageForm.module_name, {'attr': {'data-minimumResultsForSearch': '7', 'data-toggle': 'select2'}}) }}
+        </div>
+      </div>
+
       {{ form_rest(exportLanguageForm) }}
     </div>
   </div>

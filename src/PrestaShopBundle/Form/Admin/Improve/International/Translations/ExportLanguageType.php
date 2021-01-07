@@ -32,28 +32,42 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class ExportThemeLanguageType is responsible for building export language form
+ * Class ExportLanguageType is responsible for building export language form
  * in 'Improve > International > Translations' page.
  */
-class ExportThemeLanguageType extends TranslatorAwareType
+class ExportLanguageType extends TranslatorAwareType
 {
     /**
      * @var array
      */
     private $themeChoices;
+    /**
+     * @var array
+     */
+    private $moduleChoices;
+    /**
+     * @var array
+     */
+    private $translationExportTypeChoices;
 
     /**
      * @param TranslatorInterface $translator
      * @param array $locales
+     * @param array $translationExportTypeChoices
      * @param array $themeChoices
+     * @param array $moduleChoices
      */
     public function __construct(
         TranslatorInterface $translator,
         array $locales,
-        array $themeChoices
+        array $translationExportTypeChoices,
+        array $themeChoices,
+        array $moduleChoices
     ) {
         parent::__construct($translator, $locales);
+        $this->translationExportTypeChoices = $translationExportTypeChoices;
         $this->themeChoices = $themeChoices;
+        $this->moduleChoices = $moduleChoices;
     }
 
     /**
@@ -66,8 +80,17 @@ class ExportThemeLanguageType extends TranslatorAwareType
                 'choices' => $this->getLocaleChoices(),
                 'choice_translation_domain' => false,
             ])
+            ->add('translation_export_type', ChoiceType::class, [
+                'choices' => $this->translationExportTypeChoices,
+                'choice_translation_domain' => false,
+            ])
             ->add('theme_name', ChoiceType::class, [
                 'choices' => $this->themeChoices,
+                'choice_translation_domain' => false,
+            ])
+            ->add('module_name', ChoiceType::class, [
+                'placeholder' => '---',
+                'choices' => $this->moduleChoices,
                 'choice_translation_domain' => false,
             ]);
     }
