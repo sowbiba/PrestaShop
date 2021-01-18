@@ -121,7 +121,7 @@ class ModulesProvider implements ProviderInterface
     {
         try {
             $defaultCatalogue = (new DefaultCatalogueProvider(
-                $this->translationsDirectory . DIRECTORY_SEPARATOR . $locale,
+                $this->translationsDirectory . DIRECTORY_SEPARATOR . 'default',
                 $this->getFilenameFilters()
             ))
                 ->getCatalogue($locale, $empty);
