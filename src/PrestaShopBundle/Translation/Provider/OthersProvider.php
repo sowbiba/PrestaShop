@@ -36,17 +36,9 @@ class OthersProvider extends CoreProvider
 {
     public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory)
     {
-        $this->locale = self::DEFAULT_LOCALE;
-
-        $filenameFilters = ['#^messages*#'];
-
-        $translationDomains = ['^messages*'];
-
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'others'
         );
     }

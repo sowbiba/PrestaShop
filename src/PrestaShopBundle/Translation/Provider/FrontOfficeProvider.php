@@ -38,23 +38,9 @@ class FrontOfficeProvider extends CoreProvider
 
     public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory)
     {
-        $this->locale = self::DEFAULT_LOCALE;
-
-        $filenameFilters = [
-            '#^Shop*#',
-            '#^Modules(.*)Shop#',
-        ];
-
-        $translationDomains = [
-            '^Shop*',
-            '^Modules(.*)Shop',
-        ];
-
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'front'
         );
     }

@@ -35,17 +35,9 @@ class MailsBodyProvider extends CoreProvider
 {
     public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory)
     {
-        $this->locale = self::DEFAULT_LOCALE;
-
-        $filenameFilters = ['#EmailsBody*#'];
-
-        $translationDomains = ['EmailsBody*'];
-
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'mails_body'
         );
     }

@@ -35,23 +35,9 @@ class BackOfficeProvider extends CoreProvider
 {
     public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory)
     {
-        $this->locale = self::DEFAULT_LOCALE;
-
-        $filenameFilters = [
-            '#^Admin[A-Z]#',
-            '#^Modules[A-Z](.*)Admin#',
-        ];
-
-        $translationDomains = [
-            '^Admin[A-Z]',
-            '^Modules[A-Z](.*)Admin',
-        ];
-
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'back'
         );
     }

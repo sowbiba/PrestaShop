@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace PrestaShopBundle\Translation\Provider;
 
 use PrestaShop\PrestaShop\Core\Exception\FileNotFoundException;
+use PrestaShopBundle\Translation\Factory\ProviderNotFoundException;
 use PrestaShopBundle\Translation\Loader\DatabaseTranslationLoader;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\MessageCatalogueInterface;
@@ -47,14 +48,6 @@ class CoreProvider implements ProviderInterface
      */
     private $resourceDirectory;
     /**
-     * @var string[]
-     */
-    private $filenameFilters;
-    /**
-     * @var string[]
-     */
-    private $translationDomains;
-    /**
      * @var string
      */
     protected $locale;
@@ -66,21 +59,17 @@ class CoreProvider implements ProviderInterface
     /**
      * @param DatabaseTranslationLoader $databaseTranslationLoader
      * @param string $resourceDirectory
-     * @param string[] $filenameFilters
-     * @param string[] $translationDomains
      * @param string $identifier
      */
     public function __construct(
         DatabaseTranslationLoader $databaseTranslationLoader,
         string $resourceDirectory,
-        array $filenameFilters,
-        array $translationDomains,
         string $identifier
     ) {
+        $this->locale = self::DEFAULT_LOCALE;
+
         $this->databaseTranslationLoader = $databaseTranslationLoader;
         $this->resourceDirectory = $resourceDirectory;
-        $this->filenameFilters = $filenameFilters;
-        $this->translationDomains = $translationDomains;
         $this->identifier = $identifier;
     }
 
@@ -159,22 +148,6 @@ class CoreProvider implements ProviderInterface
         return $databaseCatalogue;
     }
 
-    /**
-     * @return string[]
-     */
-    protected function getFilenameFilters(): array
-    {
-        return $this->filenameFilters;
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getTranslationDomains(): array
-    {
-        return $this->translationDomains;
-    }
-
     public function getIdentifier(): string
     {
         return $this->identifier;
@@ -225,5 +198,67 @@ class CoreProvider implements ProviderInterface
         }
 
         return $messageCatalogue;
+    }
+
+    /**
+     * @return string[]
+     *
+     * @throws ProviderNotFoundException
+     */
+    protected function getTranslationDomains(): array
+    {
+        switch ($this->identifier) {
+            case 'back':
+                return [
+                    '^Admin[A-Z]',
+                    '^Modules[A-Z](.*)Admin',
+                ];
+            case 'front':
+                return [
+                    '^Shop*',
+                    '^Modules(.*)Shop',
+                ];
+            case 'mails_body':
+                return ['EmailsBody*'];
+            case 'mails':
+                return ['EmailsSubject*'];
+            case 'modules':
+                return ['^Modules[A-Z]'];
+            case 'others':
+                return ['^messages*'];
+            default:
+                throw new ProviderNotFoundException($this->identifier);
+        }
+    }
+
+    /**
+     * @return string[]
+     *
+     * @throws ProviderNotFoundException
+     */
+    protected function getFilenameFilters(): array
+    {
+        switch ($this->identifier) {
+            case 'back':
+                return [
+                    '#^Admin[A-Z]#',
+                    '#^Modules[A-Z](.*)Admin#',
+                ];
+            case 'front':
+                return [
+                    '#^Shop*#',
+                    '#^Modules(.*)Shop#',
+                ];
+            case 'mails_body':
+                return ['#EmailsBody*#'];
+            case 'mails':
+                return ['#EmailsSubject*#'];
+            case 'modules':
+                return ['#^Modules[A-Z]#'];
+            case 'others':
+                return ['#^messages*#'];
+            default:
+                throw new ProviderNotFoundException($this->identifier);
+        }
     }
 }

@@ -36,17 +36,9 @@ class ModulesProvider extends CoreProvider
 {
     public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory)
     {
-        $this->locale = self::DEFAULT_LOCALE;
-
-        $filenameFilters = ['#^Modules[A-Z]#'];
-
-        $translationDomains = ['^Modules[A-Z]'];
-
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'modules'
         );
     }

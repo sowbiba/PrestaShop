@@ -35,18 +35,38 @@ use PrestaShopBundle\Translation\Loader\DatabaseTranslationLoader;
  */
 class ModuleProvider extends CoreProvider
 {
-    public function __construct(DatabaseTranslationLoader $databaseLoader, $resourceDirectory, string $moduleName)
-    {
-        $this->locale = self::DEFAULT_LOCALE;
-        $filenameFilters = ['#^' . preg_quote(DomainHelper::buildModuleBaseDomain($moduleName)) . '([A-Z]|\.|$)#'];
-        $translationDomains = ['^' . preg_quote(DomainHelper::buildModuleBaseDomain($moduleName)) . '([A-Z]|$)'];
+    /**
+     * @var string
+     */
+    private $moduleName;
+
+    public function __construct(
+        DatabaseTranslationLoader $databaseLoader,
+        $resourceDirectory,
+        string $moduleName
+    ) {
+        $this->moduleName = $moduleName;
 
         parent::__construct(
             $databaseLoader,
             $resourceDirectory,
-            $filenameFilters,
-            $translationDomains,
             'module'
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFilenameFilters(): array
+    {
+        return ['#^' . preg_quote(DomainHelper::buildModuleBaseDomain($this->moduleName)) . '([A-Z]|\.|$)#'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTranslationDomains(): array
+    {
+        return ['^' . preg_quote(DomainHelper::buildModuleBaseDomain($this->moduleName)) . '([A-Z]|$)'];
     }
 }
