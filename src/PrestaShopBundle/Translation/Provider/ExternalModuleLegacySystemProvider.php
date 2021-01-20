@@ -67,11 +67,6 @@ class ExternalModuleLegacySystemProvider implements ProviderInterface
     protected $domain;
 
     /**
-     * @var ModuleProvider Module provider
-     */
-    private $moduleProvider;
-
-    /**
      * @var LoaderInterface Translation loader from legacy files
      */
     private $legacyFileLoader;
@@ -90,20 +85,24 @@ class ExternalModuleLegacySystemProvider implements ProviderInterface
      * @var MessageCatalogue[]
      */
     private $defaultCatalogueCache;
+    /**
+     * @var string
+     */
+    private $moduleResourceDirectory;
 
     public function __construct(
         LoaderInterface $databaseLoader,
-        $resourceDirectory,
+        string $resourceDirectory,
+        string $moduleResourceDirectory,
         LoaderInterface $legacyFileLoader,
-        LegacyModuleExtractorInterface $legacyModuleExtractor,
-        ModuleProvider $moduleProvider
+        LegacyModuleExtractorInterface $legacyModuleExtractor
     ) {
-        $this->moduleProvider = $moduleProvider;
         $this->legacyFileLoader = $legacyFileLoader;
         $this->legacyModuleExtractor = $legacyModuleExtractor;
         $this->databaseLoader = $databaseLoader;
         $this->resourceDirectory = $resourceDirectory;
         $this->locale = self::DEFAULT_LOCALE;
+        $this->moduleResourceDirectory = $moduleResourceDirectory;
     }
 
     /**
@@ -197,8 +196,12 @@ class ExternalModuleLegacySystemProvider implements ProviderInterface
     public function getXliffCatalogue()
     {
         try {
-            $translationCatalogue = $this->moduleProvider
-                ->setModuleName($this->moduleName)
+            $moduleProvider = new ModuleProvider(
+                $this->databaseLoader,
+                $this->moduleResourceDirectory,
+                $this->moduleName
+            );
+            $translationCatalogue = $moduleProvider
                 ->setLocale($this->locale)
                 ->getXliffCatalogue()
             ;
@@ -420,8 +423,12 @@ class ExternalModuleLegacySystemProvider implements ProviderInterface
 
         try {
             // look up files in the core translations
-            $defaultCatalogue = $this->moduleProvider
-                ->setModuleName($this->moduleName)
+            $moduleProvider = new ModuleProvider(
+                $this->databaseLoader,
+                $this->moduleResourceDirectory,
+                $this->moduleName
+            );
+            $defaultCatalogue = $moduleProvider
                 ->setLocale($this->locale)
                 ->getDefaultCatalogue();
         } catch (FileNotFoundException $exception) {

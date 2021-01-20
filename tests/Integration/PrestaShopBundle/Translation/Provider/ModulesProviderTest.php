@@ -27,8 +27,8 @@
 namespace Tests\Integration\PrestaShopBundle\Translation\Provider;
 
 use PHPUnit\Framework\TestCase;
+use PrestaShopBundle\Translation\Loader\DatabaseTranslationLoader;
 use PrestaShopBundle\Translation\Provider\ModulesProvider;
-use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
 /**
@@ -43,7 +43,7 @@ class ModulesProviderTest extends TestCase
 
     protected function setUp()
     {
-        $loader = $this->getMockBuilder(LoaderInterface::class)
+        $loader = $this->getMockBuilder(DatabaseTranslationLoader::class)
             ->getMock();
 
         $resourcesDir = __DIR__ . '/../../../../Resources/translations';

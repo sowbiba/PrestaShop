@@ -63,7 +63,6 @@ class ExternalModuleLegacySystemProviderTest extends KernelTestCase
         $databaseLoader = $container->get('prestashop.translation.database_loader');
         $legacyFileLoader = $container->get('prestashop.translation.legacy_file_loader');
         $phpExtractor = $container->get('prestashop.translation.extractor.php');
-        $moduleProvider = $container->get('prestashop.translation.module_provider');
         $smartyExtractor = $container->get('prestashop.translation.extractor.smarty.legacy');
         $twigExtractor = $container->get('prestashop.translation.extractor.twig');
 
@@ -77,9 +76,9 @@ class ExternalModuleLegacySystemProviderTest extends KernelTestCase
         $this->provider = new ExternalModuleLegacySystemProvider(
             $databaseLoader,
             $this->getModuleDirectory(),
+            $this->getModuleDirectory(),
             $legacyFileLoader,
-            $extractor,
-            $moduleProvider
+            $extractor
         );
 
         $this->provider
