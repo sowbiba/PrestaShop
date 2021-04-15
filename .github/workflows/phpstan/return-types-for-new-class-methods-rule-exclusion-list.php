@@ -1,6 +1,7 @@
 <?php
 
 $baseline = [
+'toto::__construct',
 'PrestaShopBundle\Form\Admin\Sell\CustomerService\MerchandiseReturn\MerchandiseReturnOptionsFormDataProvider::__construct',
 'PrestaShopBundle\Form\Admin\Sell\CustomerService\MerchandiseReturn\MerchandiseReturnOptionsFormDataProvider::getData',
 'PrestaShopBundle\Form\Admin\Sell\CustomerService\MerchandiseReturn\MerchandiseReturnOptionsFormDataProvider::setData',
