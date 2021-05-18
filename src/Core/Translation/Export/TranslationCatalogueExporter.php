@@ -115,20 +115,34 @@ class TranslationCatalogueExporter
      */
     public function export(array $selections, string $locale): string
     {
+        $cataloguePath = $this->exportCatalogues($selections, $locale);
+
+        $zipFilename = sprintf(self::EXPORT_ZIP_FILENAME, $this->exportDir, $locale);
+        $this->zipManager->createArchive($zipFilename, $cataloguePath);
+
+        return $zipFilename;
+    }
+
+    /**
+     * @param array $selections
+     * @param string $locale
+     * @return string
+     * @throws TranslationFilesNotFoundException
+     * @throws UnexpectedTranslationTypeException
+     */
+    public function exportCatalogues(array $selections, string $locale): string
+    {
         $this->validateParameters($selections);
 
         if (!$this->filesystem->exists($this->exportDir)) {
             $this->filesystem->mkdir($this->exportDir);
         }
 
-        $zipFilename = sprintf(self::EXPORT_ZIP_FILENAME, $this->exportDir, $locale);
-        $path = dirname($zipFilename);
-
         // Clean export folder
-        $this->filesystem->remove($path);
-        $this->filesystem->mkdir($path);
+        $this->filesystem->remove($this->exportDir);
+        $this->filesystem->mkdir($this->exportDir);
         $dumpOptions = [
-            'path' => $path,
+            'path' => $this->exportDir,
             'default_locale' => $locale,
             'root_dir' => _PS_ROOT_DIR_ . DIRECTORY_SEPARATOR,
         ];
@@ -147,11 +161,9 @@ class TranslationCatalogueExporter
         }
 
         // Rename files to add locale in it
-        $this->renameCatalogues($locale, $path);
+        $this->renameCatalogues($locale, $this->exportDir);
 
-        $this->zipManager->createArchive($zipFilename, $path);
-
-        return $zipFilename;
+        return $this->exportDir;
     }
 
     /**

@@ -27,8 +27,9 @@
 namespace PrestaShop\PrestaShop\Core\Addon\Theme;
 
 use PrestaShop\PrestaShop\Core\ConfigurationInterface;
+use PrestaShop\PrestaShop\Core\Translation\Storage\Provider\Definition\ProviderDefinitionInterface;
 use PrestaShopBundle\Entity\Repository\LangRepository;
-use PrestaShopBundle\Translation\Exporter\ThemeExporter as TranslationsExporter;
+use PrestaShop\PrestaShop\Core\Translation\Export\TranslationCatalogueExporter as TranslationsExporter;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use ZipArchive;
@@ -136,11 +137,15 @@ class ThemeExporter
         $catalogueDir = '';
         foreach ($languages as $lang) {
             $locale = $lang->getLocale();
-            $catalogueDir = $this->translationsExporter->exportCatalogues($theme->getName(), $locale);
+            $catalogueDir = $this->translationsExporter->exportCatalogues([
+                [
+                    'type' => ProviderDefinitionInterface::TYPE_THEMES,
+                    'selected' => $theme->getName(),
+                ],
+            ], $locale);
         }
 
         $catalogueDirParts = explode(DIRECTORY_SEPARATOR, $catalogueDir);
-        array_pop($catalogueDirParts); // Remove locale
 
         $cataloguesDir = implode(DIRECTORY_SEPARATOR, $catalogueDirParts);
         $this->fileSystem->mirror($cataloguesDir, $translationsDir);

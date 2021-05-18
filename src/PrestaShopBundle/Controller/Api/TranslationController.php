@@ -28,6 +28,7 @@ namespace PrestaShopBundle\Controller\Api;
 
 use Exception;
 use PrestaShop\PrestaShop\Adapter\EntityTranslation\EntityTranslatorFactory;
+use PrestaShop\PrestaShop\Core\Translation\Exception\UnsupportedLocaleException;
 use PrestaShop\PrestaShop\Core\Translation\Storage\Provider\Definition\CoreDomainProviderDefinition;
 use PrestaShop\PrestaShop\Core\Translation\Storage\Provider\Definition\ModuleProviderDefinition;
 use PrestaShop\PrestaShop\Core\Translation\Storage\Provider\Definition\OthersProviderDefinition;
@@ -39,7 +40,6 @@ use PrestaShopBundle\Exception\InvalidLanguageException;
 use PrestaShopBundle\Form\Admin\Improve\International\Translations\ModifyTranslationsType;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Service\TranslationService;
-use PrestaShopBundle\Translation\Exception\UnsupportedLocaleException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
